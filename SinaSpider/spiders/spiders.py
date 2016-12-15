@@ -50,7 +50,7 @@ class Spider(CrawlSpider):
     #         print "-----------------------------" + rumor[1:9] + "---------------------------"
     #     else:
     #         next_url = response.urljoin(page)
-    #         print "#################" + next_url + "#############"
+    #         print "#################" + next_url + "################"
     #         yield scrapy.Request(next_url, self.parse)
 
 
