@@ -1,7 +1,5 @@
 # encoding=utf-8
 import re
-import datetime
-import scrapy
 from scrapy.spiders import CrawlSpider
 from scrapy.selector import Selector
 from scrapy.http import Request
