@@ -10,10 +10,10 @@ DOWNLOADER_MIDDLEWARES = {
 }
 
 ITEM_PIPELINES = {
-    'SinaSpider.pipelines.MongoDBPipleline': 300,
+    'SinaSpider.pipelines.MySQLPipleline': 300,
 }
 
-DOWNLOAD_DELAY = 2  # 间隔时间
+DOWNLOAD_DELAY = 5  # 间隔时间
 # CONCURRENT_ITEMS = 1000
 # CONCURRENT_REQUESTS = 100
 # REDIRECT_ENABLED = False

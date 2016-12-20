@@ -3,7 +3,7 @@ import re
 from scrapy.spiders import CrawlSpider
 from scrapy.selector import Selector
 from scrapy.http import Request
-from SinaSpider.items import UserItem, TweetsItem
+from SinaSpider.items import TweetUserItem, TweetItem
 
 
 class Spider(CrawlSpider):
@@ -54,7 +54,7 @@ class Spider(CrawlSpider):
 
     def parse_user(self, response):
         """ 抓取个人信息1 """
-        userItem = UserItem()
+        userItem = TweetUserItem()
         selector = Selector(response)
         verifiedAll = selector.xpath('body/div[@class="u"]/table//div[@class="ut"]')
         verifiedSelector = verifiedAll.xpath('//img[@alt="V"]')
@@ -119,7 +119,7 @@ class Spider(CrawlSpider):
         selector = Selector(response)
         tweets = selector.xpath('body/div[@class="c" and @id]')
         for tweet in tweets:
-            tweetsItems = TweetsItem()
+            tweetsItems = TweetItem()
             id = tweet.xpath('@id').extract_first()  # 微博ID
             content = tweet.xpath('div/span[@class="ctt"]/text()').extract_first()  # 微博内容
             rumor = tweet.xpath('div/span[@class="kt"]')            # 谣言

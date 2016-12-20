@@ -1,10 +1,10 @@
 # encoding=utf-8
 import pymysql
 import logging
-from items import UserItem, TweetsItem
+from items import TweetUserItem, TweetItem
 
 
-class MongoDBPipleline(object):
+class MySQLPipleline(object):
     def __init__(self):
         self.conn = pymysql.Connect(host="localhost",
                                     user="root",
@@ -12,7 +12,7 @@ class MongoDBPipleline(object):
                                     db ="weibo",
                                     charset="utf8")
         self.dbcursor = self.conn.cursor()
-        self.dbcursor.execute("delete from users")
+        self.dbcursor.execute("delete from tweet_users")
         self.dbcursor.execute("delete from tweets")
         self.conn.commit()
 
@@ -23,16 +23,16 @@ class MongoDBPipleline(object):
 
     def process_item(self, item, spider):
         """ 判断item的类型，并作相应的处理，再入数据库 """
-        if isinstance(item, UserItem):
+        if isinstance(item, TweetUserItem):
             try:
-                sql = MongoDBPipleline.get_sql('users', item)
+                sql = MySQLPipleline.get_sql('tweet_users', item)
                 self.dbcursor.execute(sql, item.values())
                 self.conn.commit();
             except Exception, e:
                 logging.getLogger("mysql_pipe").error(str(e))
-        elif isinstance(item, TweetsItem):
+        elif isinstance(item, TweetItem):
             try:
-                sql = MongoDBPipleline.get_sql('tweets', item)
+                sql = MySQLPipleline.get_sql('tweets', item)
                 self.dbcursor.execute(sql, item.values())
                 self.conn.commit();
             except Exception, e:

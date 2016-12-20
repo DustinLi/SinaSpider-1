@@ -9,7 +9,7 @@ import requests
 或者你也可以把时间间隔调大点。
 """
 myWeiBo = [
-    {'no': 'kinee@sina.cn', 'psw': 'i780708@'},
+    {'no': 'kinee@sina.cn', 'psw': ''},
 ]
 
 

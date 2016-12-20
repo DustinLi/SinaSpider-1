@@ -2,7 +2,7 @@
 
 from scrapy import Item, Field
 
-class UserItem(Item):
+class TweetUserItem(Item):
     """ 个人信息 """
     Uid = Field()  # 微博发布人ID
     Uname = Field()    #昵称
@@ -18,7 +18,7 @@ class UserItem(Item):
     StatusesCount = Field()  # 微博数
     FavouritesCount = Field()  # 关注的微博数量
 
-class TweetsItem(Item):
+class TweetItem(Item):
     """ 微博信息 """
     Mid = Field()  # 微博ID
     Text = Field()  # 微博内容
@@ -29,3 +29,21 @@ class TweetsItem(Item):
     ShareCount = Field()  # 转发条数
     AttributesCount = Field()  # 点赞数量
     Rumor = Field()  # 是否谣言
+
+class SinaUserItem(Item):   #新浪微博用户，用来登录后抓取其好友数据
+    Sid = Field()
+    Pwd = Field()
+    Avaiable = Field()
+    Reason = Field()
+
+class SysUserItem(Item):   #本系统管理用户
+    Suid = Field()
+    Suname = Field()
+    Pwd = Field()
+
+class SysLogItem(Item):        #抓取日志记录
+    Lid = Field()
+    StartTime = Field()
+    EndTime = Field()
+    UserCount = Field()
+    TweetCount = Field()
