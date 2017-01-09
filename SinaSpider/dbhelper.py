@@ -23,7 +23,7 @@ class dbhelper(object):
         return self.dbcursor
 
     def insertItem(self, item, tableName):
-        sql = self.getInsertSQL(item, tableName)
+        sql = self.getInsertSQL(tableName=tableName, item=item)
         self.dbcursor.execute(sql, item.values())
         self.conn.commit()
 

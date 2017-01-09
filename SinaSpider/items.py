@@ -41,9 +41,16 @@ class SysUserItem(Item):   #本系统管理用户
     Suname = Field()
     Pwd = Field()
 
-class SysLogItem(Item):        #抓取日志记录
+class SysLogItem(Item):    #抓取日志记录
     Lid = Field()
     StartTime = Field()
     EndTime = Field()
     UserCount = Field()
     TweetCount = Field()
+
+class SysParamItem(Item):    #系统参数
+    Pid = Field()
+    ParamCode = Field()
+    ParamName = Field()
+    ParamValue = Field()
+    Enabled = Field()
