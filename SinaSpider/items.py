@@ -47,6 +47,8 @@ class SysLogItem(Item):    #抓取日志记录
     EndTime = Field()
     UserCount = Field()
     TweetCount = Field()
+    MsgType = Field()
+    Message = Field()
 
 class SysParamItem(Item):    #系统参数
     Pid = Field()

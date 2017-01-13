@@ -41,7 +41,9 @@ create table sys_logs (
 	StartTime datetime,
 	EndTime datetime,
 	UserCount int,
-	TweetCount int
+	TweetCount int,
+	MsgType varchar(32),
+	Message varchar(256)
 );
 
 create table sys_params (
