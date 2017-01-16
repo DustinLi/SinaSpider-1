@@ -38,12 +38,12 @@ create table sina_users (
 
 create table sys_logs (
 	Lid int primary key auto_increment,
-	StartTime datetime,
-	EndTime datetime,
+	ProcessID bigint,
+	LogTime varchar(20),  /*2017-01-01 00:00:00*/
 	UserCount int,
 	TweetCount int,
 	MsgType varchar(32),
-	Message varchar(256)
+	Message varchar(1024)
 );
 
 create table sys_params (

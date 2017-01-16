@@ -1,8 +1,12 @@
 # encoding=utf-8
 
 from dbhelper import dbhelper, logger
+from messages import system_message
+
 
 class SysConfig:
+    def __init__(self):
+        pass
 
     def getAvailableSinaUser(self):
         users = dbhelper.selectItem("sina_users", {"Avaiable": "1"})
@@ -10,6 +14,6 @@ class SysConfig:
         if len(users)>0:
             result = users[0]
         else:
-            logger.info(u'没有可用的新浪微博用户，请添加微博用户账号')
+            logger.error(system_message[10003])
 
         return result

@@ -43,8 +43,8 @@ class SysUserItem(Item):   #本系统管理用户
 
 class SysLogItem(Item):    #抓取日志记录
     Lid = Field()
-    StartTime = Field()
-    EndTime = Field()
+    ProcessID = Field()
+    LogTime = Field()
     UserCount = Field()
     TweetCount = Field()
     MsgType = Field()

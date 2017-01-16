@@ -1,13 +1,16 @@
 # encoding=utf-8
 
 import pymysql
-import sys
 import logging
 import time
+import math
+from messages import system_message
+from sys import stdout
 from items import SysLogItem
 
-class DBHelper(object):
+logid = math.floor(time.time())
 
+class DBHelper(object):
     hostName = "localhost"
     dbUser = "root"
     dbPwd = "root"
@@ -15,12 +18,17 @@ class DBHelper(object):
     dbCharset = "utf8"
 
     def __init__(self):
-        self.conn = pymysql.Connect(host=self.hostName,
-                                    user=self.dbUser,
-                                    password=self.dbPwd,
-                                    db=self.dbName,
-                                    charset=self.dbCharset)
-        self.dbcursor = self.conn.cursor()
+        try:
+            self.conn = pymysql.Connect(host=self.hostName,
+                                        user=self.dbUser,
+                                        password=self.dbPwd,
+                                        db=self.dbName,
+                                        charset=self.dbCharset)
+            self.dbcursor = self.conn.cursor()
+            self.writeLog(system_message[10001])
+        except:
+            self.writeLog(system_message[11001], 'ERROR')
+            raise
 
     def getConnection(self):
         return self.conn
@@ -29,13 +37,17 @@ class DBHelper(object):
         return self.dbcursor
 
     def executeSQL(self, sql, args=None):
-        # logger.info(sql)
-        print sql
-        if args is None:
-            return self.dbcursor.execute(sql)
-        else:
-            return self.dbcursor.execute(sql, args)
-        self.conn.commit()
+        try:
+            # print sql
+            if args is None:
+                er = self.dbcursor.execute(sql)
+            else:
+                er = self.dbcursor.execute(sql, args)
+            self.conn.commit()
+            return er
+        except:
+            self.writeLog(system_message[11002] + sql, 'ERROR')
+            raise
 
     def selectItem(self, tableName, filter):
         whereClause = self.getWhereClause(filter)
@@ -66,23 +78,32 @@ class DBHelper(object):
         whereClause = ' AND '.join([column + '%s' for column in columns]) % tuple(filter.values())
         return whereClause
 
+    def writeLog(self, msg, type='INFO'):
+        item = SysLogItem()
+        item['ProcessID'] = logid
+        item['LogTime'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+        item['MsgType'] = type
+        item['Message'] = msg
+        self.insertItem(item, 'sys_logs')
+
     def __del__(self):
         self.dbcursor.close()
         self.conn.close()
+        print u'数据库连接关闭，采集程序退出。'
 
 dbhelper = DBHelper()
+
 
 class DatabaseStream(logging.Handler):
     def emit(self, record):
         item = SysLogItem()
-        item['StartTime'] = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+        item['ProcessID'] = logid
+        item['LogTime'] = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
         item['MsgType'] = record.levelname
         item['Message'] = record.getMessage()
-        print item
         dbhelper.insertItem(item, 'sys_logs')
 
-#logging.basicConfig(stream=DatabaseStream())
-logger = logging.getLogger("dbhelper")
-#logger.addHandler(sys.stdout)
-logger.addHandler(DatabaseStream())
+logger = logging.getLogger("WiBoSpider")
 logger.setLevel(logging.INFO)
+logger.addHandler(logging.StreamHandler(stdout))
+logger.addHandler(DatabaseStream())

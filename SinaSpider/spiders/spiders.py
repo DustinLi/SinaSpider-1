@@ -4,6 +4,7 @@ from scrapy.spiders import CrawlSpider
 from scrapy.selector import Selector
 from scrapy.http import Request
 from SinaSpider.items import TweetUserItem, TweetItem
+from SinaSpider.syshelper import SysConfig
 
 
 class Spider(CrawlSpider):
@@ -18,20 +19,21 @@ class Spider(CrawlSpider):
     finish_ID = set()  # 记录已爬的微博ID
 
     def start_requests(self):
-        while True:
-            if self.scrawl_ID:
-                user_id = self.scrawl_ID.pop()
-                if user_id:
-                    self.finish_ID.add(user_id)  # 加入已爬队列
-                    user_id = str(user_id)
-                    url_user = "http://weibo.cn/u/%s?filter=1" % user_id
-                    yield Request(url=url_user, meta={"user_id": user_id}, callback=self.parse_user)  # 去爬用户
-                    url_tweet = "http://weibo.cn/%s/profile?filter=0&page=230" % user_id
-                    yield Request(url=url_tweet, meta={"user_id": user_id}, callback=self.parse_tweets)
-                else:
-                    break
-            else:
-                break
+        yield Request(url=self.host, callback=self.parse_login_user)
+        # while True:
+        #     if self.scrawl_ID:
+        #         user_id = self.scrawl_ID.pop()
+        #         if user_id:
+        #             self.finish_ID.add(user_id)  # 加入已爬队列
+        #             user_id = str(user_id)
+        #             url_user = "http://weibo.cn/u/%s?filter=1" % user_id
+        #             yield Request(url=url_user, meta={"user_id": user_id}, callback=self.parse_user)  # 去爬用户
+        #             url_tweet = "http://weibo.cn/%s/profile?filter=0&page=230" % user_id
+        #             yield Request(url=url_tweet, meta={"user_id": user_id}, callback=self.parse_tweets)
+        #         else:
+        #             break
+        #     else:
+        #         break
 
     # start_urls = ['http://weibo.cn/1829429022/profile?filter=0&page=230']
     #
@@ -51,6 +53,12 @@ class Spider(CrawlSpider):
     #         print "#################" + next_url + "################"
     #         yield scrapy.Request(next_url, self.parse)
 
+    def parse_login_user(self, response):
+        selector = Selector(response)
+        path = selector.xpath(u'//a/text()[contains[u"详细资料"]/@href').extract_first()
+        if (path is not None) and (path != ""):
+            uid=re.findall(u'[//*//.*?]')
+            print uid
 
     def parse_user(self, response):
         """ 抓取个人信息1 """
