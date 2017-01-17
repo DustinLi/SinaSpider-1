@@ -12,14 +12,14 @@ class Spider(CrawlSpider):
     host = "http://weibo.cn"
 
     user_ids = [
-        # 2490083212, 3952070245,
-        1829429022
+        # u'2954342027' http://weibo.cn/2954342027/follow
+        # 1829429022
     ]
     scrawl_ID = set(user_ids)  # 记录待爬的微博ID
     finish_ID = set()  # 记录已爬的微博ID
 
     def start_requests(self):
-        yield Request(url=self.host, callback=self.parse_weibo_user)
+        yield Request(url=self.host, callback=self.parse_login_user)
         # while True:
         #     if self.scrawl_ID:
         #         user_id = self.scrawl_ID.pop()
@@ -59,34 +59,35 @@ class Spider(CrawlSpider):
         path = selector.xpath(u'//a[text()="\u8be6\u7ec6\u8d44\u6599"]/@href').extract_first()
         if (path is not None) and (path != ""):
             uid=re.findall(u'/(\d*)/.*', path)
-            if uid != '':
-                url_follow = 'http://weibo.cn/%s/follow' % uid
+            if (len(uid) > 0) and (uid[0] != ''):
+                url_follow = 'http://weibo.cn/%s/follow' % uid[0]
                 yield Request(url=url_follow, callback=self.parse_follower)
 
-    # 爬取用户微博
+    # 爬取当前登录用户关注的用户，只爬第一页
     def parse_follower(self, respose):
         selector = Selector(respose)
-        url_followers = selector.xpath('/html/body/table[1]/tbody/tr/td[1]/a/@href').extract()
+        url_followers = selector.xpath('/html/body/table[*]/tr/td[1]/a/@href').extract()
         for url_follower in url_followers:
-            yield Request(url=url_follower, callback=self.parse_weibo_user())
+            yield Request(url=url_follower, callback=self.parse_follow_user)
         else:
             #follow用户完成后挑选follower中的用户作为宿主查找此用户的followers
-            url_next = 'http://weibo.cn/%s/follow' % self.user_ids.pop()
-            yield Request(url=url_next, callback=self.parse_follower)
+            if len(self.user_ids) > 0:
+                url_next = 'http://weibo.cn/%s/follow' % self.user_ids.pop(0)
+                yield Request(url=url_next, callback=self.parse_follower)
 
 
     # 爬取用户ID数据
-    def parse_weibo_user(self, response):
+    def parse_follow_user(self, response):
         selector = Selector(response)
         path = selector.xpath(u'//a[text()="\u8d44\u6599"]/@href').extract_first()
         if (path is not None) and (path != ""):
             uid = re.findall(u'/(\d*)/.*', path)
-            if uid != '':
-                self.user_ids.append(uid)         #记录所有用户ID，为爬取其followers的数据
-                url_user = "http://weibo.cn/u/%s?filter=1" % uid
-                yield Request(url=url_user, meta={"user_id": uid}, callback=self.parse_user)  # 去爬用户
-                url_tweet = "http://weibo.cn/%s/profile?filter=0&page=230" % uid
-                yield Request(url=url_tweet, meta={"user_id": uid}, callback=self.parse_tweets)
+            if (len(uid) > 0) and (uid[0] != ''):
+                self.user_ids.append(uid[0])         #记录所有用户ID，为爬取其followers的数据
+                url_user = "http://weibo.cn/u/%s?filter=1" % uid[0]
+                yield Request(url=url_user, meta={"user_id": uid[0]}, callback=self.parse_user)  # 去爬用户
+                url_tweet = "http://weibo.cn/%s/profile?filter=0&page=230" % uid[0]
+                yield Request(url=url_tweet, meta={"user_id": uid[0]}, callback=self.parse_tweets)
 
     def parse_user(self, response):
         """ 抓取个人信息1 """
