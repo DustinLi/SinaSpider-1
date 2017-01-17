@@ -86,7 +86,7 @@ class Spider(CrawlSpider):
                 self.user_ids.append(uid[0])         #记录所有用户ID，为爬取其followers的数据
                 url_user = "http://weibo.cn/u/%s?filter=1" % uid[0]
                 yield Request(url=url_user, meta={"user_id": uid[0]}, callback=self.parse_user)  # 去爬用户
-                url_tweet = "http://weibo.cn/%s/profile?filter=0&page=230" % uid[0]
+                url_tweet = "http://weibo.cn/%s/profile?filter=0" % uid[0]
                 yield Request(url=url_tweet, meta={"user_id": uid[0]}, callback=self.parse_tweets)
 
     def parse_user(self, response):
