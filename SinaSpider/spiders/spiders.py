@@ -1,10 +1,10 @@
 # encoding=utf-8
 import re
-from scrapy.spiders import CrawlSpider
-from scrapy.selector import Selector
+
 from scrapy.http import Request
+from scrapy.selector import Selector
+from scrapy.spiders import CrawlSpider
 from SinaSpider.items import TweetUserItem, TweetItem
-from SinaSpider.syshelper import SysConfig
 
 
 class Spider(CrawlSpider):
