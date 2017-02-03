@@ -1,8 +1,8 @@
-create schema weibo;
-use weibo;
+create schema weibo_t;
+use weibo_t;
 
 create table tweet_users (
-	Uid varchar(32),
+	Uid varchar(32) primary key,
 	Uname varchar(128),
 	Verified boolean,
 	VerifiedType varchar(200),
@@ -18,6 +18,7 @@ create table tweet_users (
 );
 
 create table tweets (
+	tid bigint primary key auto_increment,
 	Mid varchar(32),
 	Text varchar(10000),
 	Time varchar(32),
@@ -30,7 +31,7 @@ create table tweets (
 );
 
 create table sina_users (
-	Sid varchar(32),
+	Sid varchar(32) primary key,
 	Pwd varchar(32),
 	Avaiable boolean,
 	Reason varchar(512)
@@ -56,7 +57,7 @@ create table sys_params (
 insert into sys_params (pid, paramcode, paramname, paramvalue) values (1, 'isRun', '运行状态', 0);
 
 create table sys_users (
-	Suid varchar(32) not null,
+	Suid varchar(32) primary key not null,
 	Suname varchar(32) not null,
 	Pwd varchar(32)
 );
