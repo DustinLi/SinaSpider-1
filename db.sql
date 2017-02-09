@@ -1,5 +1,5 @@
-create schema weibo_t;
-use weibo_t;
+create schema weibo;
+use weibo;
 
 create table tweet_users (
 	Uid varchar(32) primary key,
