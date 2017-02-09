@@ -13,7 +13,7 @@ logid = math.floor(time.time())
 class DBHelper(object):
     hostName = "localhost"
     dbUser = "root"
-    dbPwd = "root"
+    dbPwd = "88EFF6"
     dbName = "weibo"
     dbCharset = "utf8"
 
