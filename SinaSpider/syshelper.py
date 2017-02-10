@@ -14,6 +14,6 @@ class SysConfig:
         if len(users)>0:
             result = users[0]
         else:
-            logger.error(system_message[10003])
+            logger.info(system_message[10003])
 
         return result
